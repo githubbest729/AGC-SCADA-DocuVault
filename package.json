@@ -1,0 +1,29 @@
+{
+  "name": "agc-scada-docuvault",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline-first PWA for creating, managing, and exporting SCADA documentation — Al Gurg Automation & Controls.",
+  "author": "Christian Tosita Espinosa, SCADA Engineer",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server . -p 8080 -c-1",
+    "dev": "http-server . -p 8080 -c-1 -o",
+    "serve": "npm run dev"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "keywords": [
+    "scada",
+    "pwa",
+    "offline-first",
+    "documentation",
+    "indexeddb",
+    "vanilla-js"
+  ]
+}

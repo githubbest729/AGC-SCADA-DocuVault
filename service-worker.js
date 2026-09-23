@@ -12,20 +12,25 @@ const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 // Local files that make up the installable app shell.
 // Update CACHE_VERSION whenever any of these change so old caches are purged.
 const APP_SHELL_FILES = [
-  "./",
-  "./index.html",
-  "./style.css",
-  "./app.js",
-  "./database.js",
-  "./manifest.json",
-  "./offline.html",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./favicon-16x16.png",
-  "./favicon-32x32.png",
-  "./favicon-48x48.png",
-  "./favicon.ico",
-  "./apple-touch-icon.png",
+  "/",
+  "/index.html",
+  "/style.css",
+  "/app.js",
+  "/database.js",
+  "/manifest.json",
+  "/browserconfig.xml",
+  "/offline.html",
+  "/favicon.ico",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/icon-maskable-192.png",
+  "/icons/icon-maskable-512.png",
+  "/icons/icon-152.png",
+  "/icons/icon-180.png",
+  "/icons/apple-touch-icon.png",
+  "/icons/favicon-16x16.png",
+  "/icons/favicon-32x32.png",
+  "/icons/favicon-48x48.png",
 ];
 
 // Third-party CDN assets — cached at runtime (stale-while-revalidate) so the
@@ -75,11 +80,11 @@ self.addEventListener("fetch", (event) => {
       fetch(req)
         .then((res) => {
           const copy = res.clone();
-          caches.open(APP_SHELL_CACHE).then((cache) => cache.put("./index.html", copy));
+          caches.open(APP_SHELL_CACHE).then((cache) => cache.put("/index.html", copy));
           return res;
         })
         .catch(() =>
-          caches.match("./index.html").then((cached) => cached || caches.match("./offline.html"))
+          caches.match("/index.html").then((cached) => cached || caches.match("/offline.html"))
         )
     );
     return;

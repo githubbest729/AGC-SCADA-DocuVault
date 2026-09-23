@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Windows / Microsoft Edge "pinned tile" configuration.
+  Referenced from index.html via:
+    <meta name="msapplication-config" content="/browserconfig.xml">
+
+  Ideal Windows tile assets are 70x70, 150x150, 310x150, and 310x310 —
+  sizes this project doesn't generate by default. icon-192.png is used
+  as a scalable stand-in below so pinning still works out of the box;
+  swap in purpose-built tile images at those exact sizes for pixel-perfect
+  results if you want to polish this further.
+-->
+<browserconfig>
+  <msapplication>
+    <tile>
+      <square70x70logo src="/icons/icon-192.png"/>
+      <square150x150logo src="/icons/icon-192.png"/>
+      <square310x310logo src="/icons/icon-512.png"/>
+      <wide310x150logo src="/icons/icon-192.png"/>
+      <TileColor>#0f172a</TileColor>
+    </tile>
+  </msapplication>
+</browserconfig>

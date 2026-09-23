@@ -903,6 +903,15 @@ Brief description of the process and what this HMI controls.
     registerServiceWorker();
     await loadSidebar();
     showWorkspace(false);
+
+    // Support the manifest "New Document" shortcut (right-click app icon -> New Document),
+    // which launches with /index.html?action=new
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("action") === "new") {
+      await newBlankDocument();
+      // Clean the query string so a refresh doesn't create another blank doc.
+      window.history.replaceState({}, "", window.location.pathname);
+    }
   }
 
   document.addEventListener("DOMContentLoaded", init);

@@ -2,51 +2,78 @@
   "name": "AGC SCADA DocuVault",
   "short_name": "DocuVault",
   "description": "Offline-first SCADA documentation manager for Al Gurg Automation & Controls — network architecture, PLC configs, HMI specs, and site notes.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "id": "/index.html",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "any",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
+  "lang": "en",
+  "dir": "ltr",
   "categories": ["productivity", "utilities", "engineering"],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-maskable-192.png",
+      "src": "/icons/icon-maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "maskable any"
     },
     {
-      "src": "icon-maskable-512.png",
+      "src": "/icons/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
     {
-      "src": "screenshot-wide.png",
+      "src": "/screenshots/screenshot-wide.png",
       "sizes": "1280x800",
       "type": "image/png",
-      "form_factor": "wide"
+      "form_factor": "wide",
+      "label": "AGC SCADA DocuVault — two-pane editor with live Markdown preview"
     },
     {
-      "src": "screenshot-narrow.png",
+      "src": "/screenshots/screenshot-narrow.png",
       "sizes": "750x1334",
       "type": "image/png",
-      "form_factor": "narrow"
+      "form_factor": "narrow",
+      "label": "AGC SCADA DocuVault on mobile"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Document",
+      "short_name": "New Doc",
+      "description": "Start a new blank SCADA document",
+      "url": "/index.html?action=new",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
