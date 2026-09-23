@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://YOUR-DEPLOY-DOMAIN/sitemap.xml

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline — AGC SCADA DocuVault</title>
+<meta name="theme-color" content="#0f172a">
+<style>
+  :root {
+    --bg-void: #0f172a;
+    --bg-panel: #1e293b;
+    --border-color: #334155;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent: #38bdf8;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%; margin: 0;
+    background: var(--bg-void);
+    color: var(--text-primary);
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 40px 36px;
+    text-align: center;
+    max-width: 380px;
+  }
+  .icon { font-size: 42px; margin-bottom: 14px; }
+  h1 { font-size: 18px; margin: 0 0 8px; color: var(--text-primary); }
+  p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin: 0 0 20px; }
+  .brand { color: var(--accent); font-weight: 700; letter-spacing: 0.3px; }
+  button {
+    background: var(--accent);
+    color: #05202e;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  button:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">📡</div>
+    <h1>You're offline</h1>
+    <p>
+      <span class="brand">AGC SCADA DocuVault</span> couldn't reach the network,
+      and this page hasn't been cached yet on this device. Once you've opened
+      the app online at least once, it will keep working fully offline —
+      including your saved documents and images.
+    </p>
+    <button onclick="location.href='./index.html'">Try again</button>
+  </div>
+</body>
+</html>

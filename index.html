@@ -48,53 +48,7 @@
       <input id="search-input" type="search" placeholder="Search documents…" autocomplete="off">
     </div>
 
-    <nav id="folder-tree" aria-label="Document categories">
-      <!-- Populated by app.js. Static structure shown for reference: -->
-      <div class="category" data-category="Network Architecture">
-        <div class="category-header">
-          <span class="cat-icon">▸</span>
-          <span class="cat-name">Network Architecture</span>
-          <span class="cat-count">0</span>
-        </div>
-        <ul class="doc-list"></ul>
-      </div>
-
-      <div class="category" data-category="PLC Configurations">
-        <div class="category-header">
-          <span class="cat-icon">▸</span>
-          <span class="cat-name">PLC Configurations</span>
-          <span class="cat-count">0</span>
-        </div>
-        <ul class="doc-list"></ul>
-      </div>
-
-      <div class="category" data-category="HMI/SCADA Design Specs">
-        <div class="category-header">
-          <span class="cat-icon">▸</span>
-          <span class="cat-name">HMI/SCADA Design Specs</span>
-          <span class="cat-count">0</span>
-        </div>
-        <ul class="doc-list"></ul>
-      </div>
-
-      <div class="category" data-category="User Manuals">
-        <div class="category-header">
-          <span class="cat-icon">▸</span>
-          <span class="cat-name">User Manuals</span>
-          <span class="cat-count">0</span>
-        </div>
-        <ul class="doc-list"></ul>
-      </div>
-
-      <div class="category" data-category="Site Notes">
-        <div class="category-header">
-          <span class="cat-icon">▸</span>
-          <span class="cat-name">Site Notes</span>
-          <span class="cat-count">0</span>
-        </div>
-        <ul class="doc-list"></ul>
-      </div>
-    </nav>
+    <nav id="folder-tree" aria-label="Document categories"></nav>
 
     <div class="sidebar-footer">
       <span id="storage-status">● IndexedDB ready</span>
@@ -133,7 +87,7 @@
         <button id="btn-delete-doc" class="btn btn-danger" title="Delete document">🗑</button>
       </div>
 
-      <div class="editor-preview-split">
+      <div class="editor-preview-split" id="split-container">
         <section class="pane editor-pane">
           <div class="pane-header">
             <span>MARKDOWN</span>
@@ -163,9 +117,7 @@
       <button id="template-modal-close" class="btn-icon">✕</button>
     </div>
     <div class="modal-body">
-      <ul id="template-list" class="template-list">
-        <!-- Populated by app.js -->
-      </ul>
+      <ul id="template-list" class="template-list"></ul>
     </div>
   </div>
 </div>
