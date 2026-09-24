@@ -800,22 +800,32 @@ Brief description of the process and what this HMI controls.
 
     toast("Generating PDF… Please wait.");
 
-    // Strip the fake placeholder image so it never crashes html2canvas
+    // 1. AUTO-FIX: Completely remove the Markdown image tag containing the broken placeholder
     let safeContent = currentDoc.content || "";
-    safeContent = safeContent.replace(/data:image\/png;base64,PLACEHOLDER_PASTE_YOUR_DIAGRAM_HERE/g, "");
+    safeContent = safeContent.replace(/!\[.*?\]\(data:image\/png;base64,PLACEHOLDER_PASTE_YOUR_DIAGRAM_HERE\)/g, "");
     const safeDoc = { ...currentDoc, content: safeContent };
 
-    // Create the container
+    // 2. Create the container
     const container = document.createElement("div");
     container.innerHTML = buildLetterheadHtml(safeDoc);
     const elementToPrint = container.firstElementChild;
     
-    // Mount it strictly to the top-left of the window so no CSS offsets break the screenshot
+    // Mount it strictly to the top-left of the window
     elementToPrint.style.position = "absolute";
     elementToPrint.style.top = "0";
     elementToPrint.style.left = "0";
+    elementToPrint.style.width = "800px";
     elementToPrint.style.zIndex = "-9999";
+    elementToPrint.style.backgroundColor = "#ffffff";
     document.body.appendChild(elementToPrint);
+
+    // 3. CRITICAL BUG FIX for html2canvas clipping/blank pages:
+    // The CSS property `overflow: hidden` on html/body causes html2canvas to clip 
+    // the screenshot or render white pages. We MUST set it to visible temporarily.
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "visible";
+    document.documentElement.style.overflow = "visible";
 
     const safeName = (safeDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
     const opt = {
@@ -826,8 +836,8 @@ Brief description of the process and what this HMI controls.
         scale: 2, 
         useCORS: true, 
         backgroundColor: "#ffffff",
-        scrollX: 0, // CRITICAL: This explicitly forces the screenshot to not cut off the left edge
-        scrollY: 0, // CRITICAL: This explicitly forces the screenshot to not cut off the top edge
+        scrollX: 0,
+        scrollY: 0,
         windowWidth: 800
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
@@ -841,7 +851,10 @@ Brief description of the process and what this HMI controls.
       console.error(err);
       toast("PDF export failed: " + err.message, true);
     } finally {
-      // Clean up the DOM immediately so it doesn't leave ghost elements
+      // 4. Clean up the DOM and restore original overflow
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      
       if (document.body.contains(elementToPrint)) {
         document.body.removeChild(elementToPrint);
       }
