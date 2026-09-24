@@ -5,19 +5,18 @@
    with zero network connection.
    ========================================================================== */
 
-const CACHE_VERSION = "agc-docuvault-v2"; // Bumped version to force cache refresh
+const CACHE_VERSION = "agc-docuvault-v3"; // Bumped to v3 to force a clean slate
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
 // Local files that make up the installable app shell.
-// FIXED: Using relative paths ("./") so GitHub pages routing doesn't break.
 const APP_SHELL_FILES = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
   "./database.js",
-  "./seed-data.js", // ADDED: Seed data script
+  "./seed-data.js",
   "./manifest.json",
   "./favicon.ico",
   "./icons/icon-192.png",
@@ -32,11 +31,10 @@ const APP_SHELL_FILES = [
   "./icons/favicon-48x48.png"
 ];
 
-// Third-party CDN assets — cached at runtime (stale-while-revalidate) so the
-// editor and PDF export still work offline after the first successful load.
+// Third-party CDN assets — cached at runtime (stale-while-revalidate)
 const RUNTIME_ORIGINS = [
   "https://cdnjs.cloudflare.com", // For html2pdf
-  "https://cdn.jsdelivr.net"      // ADDED: For marked.js
+  "https://cdn.jsdelivr.net"      // For marked.js
 ];
 
 self.addEventListener("install", (event) => {
@@ -70,7 +68,13 @@ function isRuntimeCdnRequest(url) {
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
+  
+  // Only cache GET requests
   if (req.method !== "GET") return;
+
+  // CRITICAL FIX: Do not attempt to cache browser extension injections (like VeePN or Coupert)
+  // This prevents the "Request scheme 'chrome-extension' is unsupported" crash.
+  if (!req.url.startsWith("http")) return;
 
   const url = req.url;
 
@@ -83,9 +87,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(APP_SHELL_CACHE).then((cache) => cache.put("./index.html", copy));
           return res;
         })
-        .catch(() =>
-          caches.match("./index.html")
-        )
+        .catch(() => caches.match("./index.html"))
     );
     return;
   }
