@@ -795,27 +795,49 @@ Brief description of the process and what this HMI controls.
       return;
     }
 
-    el.pdfRoot.innerHTML = buildLetterheadHtml(currentDoc);
+    toast("Generating PDF… Please wait.");
+
+    // 1. Create a temporary off-screen container
+    const container = document.createElement("div");
+    container.innerHTML = buildLetterheadHtml(currentDoc);
+    
+    // 2. Force explicit physical dimensions so html2canvas can capture it
+    container.style.position = "absolute";
+    container.style.left = "-9999px";
+    container.style.top = "-9999px";
+    container.style.width = "800px"; // Crucial: Forces A4 standard width scaling
+    container.style.background = "#ffffff";
+    container.style.color = "#000000";
+    
+    // Append to body so the browser actually renders the fonts and layout
+    document.body.appendChild(container);
 
     const safeName = (currentDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
     const opt = {
       margin: [12, 12, 16, 12], // top, left, bottom, right (mm)
       filename: `AGC_${safeName}.pdf`,
-      image: { type: "jpeg", quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: "#ffffff",
+        windowWidth: 800 // Explicitly tell the canvas how wide to look
+      },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       pagebreak: { mode: ["css", "legacy"] },
     };
 
-    toast("Generating PDF…");
     try {
-      await html2pdf().set(opt).from(el.pdfRoot).save();
+      await html2pdf().set(opt).from(container).save();
       toast("PDF exported successfully.");
     } catch (err) {
       console.error(err);
       toast("PDF export failed: " + err.message, true);
     } finally {
-      el.pdfRoot.innerHTML = "";
+      // 3. Clean up the DOM to prevent memory leaks
+      if (document.body.contains(container)) {
+        document.body.removeChild(container);
+      }
     }
   }
 
