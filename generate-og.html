@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generate OG Image - AGC SCADA DocuVault</title>
+  <style>
+    body { background: #0b1120; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: system-ui, sans-serif; color: #fff; }
+    canvas { border: 1px solid #334155; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border-radius: 8px; margin-bottom: 20px; }
+    .btn { background: #38bdf8; color: #05202e; border: none; padding: 12px 24px; font-weight: 700; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    .btn:hover { background: #0ea5e9; }
+  </style>
+</head>
+<body>
+
+  <canvas id="ogCanvas" width="1200" height="630"></canvas>
+  <button class="btn" onclick="downloadImage()">Download og-image.png</button>
+
+  <script>
+    const canvas = document.getElementById('ogCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 1. Background Gradient (Slate void to dark panel)
+    const bgGrad = ctx.createLinearGradient(0, 0, 1200, 630);
+    bgGrad.addColorStop(0, '#0f172a');
+    bgGrad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1200, 630);
+
+    // 2. Industrial Accent Glow Lines
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(100, 0); ctx.lineTo(100, 630);
+    ctx.moveTo(1100, 0); ctx.lineTo(1100, 630);
+    ctx.stroke();
+
+    // Top border accent bar
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(0, 0, 1200, 8);
+
+    // 3. AGC Badge / Logo Text
+    ctx.font = '800 28px system-ui, sans-serif';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText('AGC', 100, 120);
+
+    ctx.font = '600 24px system-ui, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('SCADA DOCUVAULT', 175, 120);
+
+    // 4. Main Title
+    ctx.font = '800 56px system-ui, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('Industrial SCADA Documentation', 100, 240);
+    
+    ctx.font = '800 56px system-ui, sans-serif';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText('Managed Locally & Offline-First', 100, 310);
+
+    // 5. Subtitle / Description
+    ctx.font = '400 22px system-ui, sans-serif';
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillText('• Markdown Editor & Clipboard Image-to-Base64 Support', 100, 400);
+    ctx.fillText('• Automated Branded A4 PDF Exports for PLC & Network Specs', 100, 440);
+
+    // 6. Footer Metadata
+    ctx.strokeStyle = 'rgba(51, 65, 85, 0.6)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(100, 520); ctx.lineTo(1100, 520);
+    ctx.stroke();
+
+    ctx.font = '600 16px system-ui, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('Al Gurg Automation & Controls — Dubai, UAE', 100, 565);
+
+    ctx.font = '400 16px system-ui, sans-serif';
+    ctx.fillStyle = '#64748b';
+    ctx.textAlign = 'right';
+    ctx.fillText('Engineer: Christian Tosita Espinosa', 1100, 565);
+
+    function downloadImage() {
+      const link = document.createElement('a');
+      link.download = 'og-image.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
