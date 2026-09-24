@@ -47,7 +47,7 @@
 
 ## Device IP Table
 
-| Device Tag | Device Type       | IP Address     | Subnet Mask     | Rack/Slot | MAC Address        | Notes                  |
+| Device Tag | Device Type        | IP Address     | Subnet Mask      | Rack/Slot | MAC Address         | Notes                  |
 |------------|--------------------|----------------|------------------|-----------|---------------------|-------------------------|
 | PLC-101    | S7-1500 CPU        | 192.168.0.10   | 255.255.255.0    | 0/1       | 00-1B-1B-00-00-01   | Main process controller |
 | PLC-102    | S7-1200 CPU        | 192.168.0.11   | 255.255.255.0    | 0/1       | 00-1B-1B-00-00-02   | Remote skid PLC         |
@@ -57,7 +57,7 @@
 
 ## Modbus / Fieldbus Notes
 
-| Register Range | Function             | Data Type | Access     |
+| Register Range | Function               | Data Type | Access     |
 |------------------|-----------------------|-----------|------------|
 | 40001–40050      | Analog process values | Float32   | Read Only  |
 | 40051–40080      | Setpoints              | Float32   | Read/Write |
@@ -93,12 +93,12 @@ Describe the scope of the SCADA system, the process area covered, and the primar
 
 ## 2. System Node Inventory
 
-| Node Name    | Role                        | OS              | IP Address    | Notes                     |
+| Node Name    | Role                          | OS              | IP Address    | Notes                     |
 |--------------|------------------------------|-----------------|---------------|----------------------------|
 | GR-SVR-01    | Galaxy Repository (Primary)  | Windows Server  | 192.168.10.10 | Redundant pair with SVR-02 |
 | GR-SVR-02    | Galaxy Repository (Standby)  | Windows Server  | 192.168.10.11 | Hot standby                |
 | APP-ENG-01   | Application Engine           | Windows Server  | 192.168.10.20 | Runs core control objects  |
-| HIST-01      | Historian Server              | Windows Server  | 192.168.10.30 | Wonderware Historian       |
+| HIST-01      | Historian Server             | Windows Server  | 192.168.10.30 | Wonderware Historian       |
 | CLIENT-01    | InTouch Operator Client       | Windows 10       | 192.168.10.40 | Control room station 1     |
 | CLIENT-02    | InTouch Operator Client       | Windows 10       | 192.168.10.41 | Control room station 2     |
 
@@ -885,10 +885,11 @@ Brief description of the process and what this HMI controls.
   }
 
   /* ---------------------------------------------------------------------
-     Init
+     Init (Integrated Seed Data Check)
      --------------------------------------------------------------------- */
 
   async function init() {
+    // 1. Initialize Database
     try {
       await DocuVaultDB.init();
       el.storageStatus.textContent = "● IndexedDB ready";
@@ -898,14 +899,28 @@ Brief description of the process and what this HMI controls.
       return;
     }
 
+    // 2. Inject sample documents if database is empty (Merged logic)
+    if (typeof window.seedDatabase === "function") {
+      try {
+        const seedResult = await window.seedDatabase();
+        if (seedResult && seedResult.seeded) {
+          console.log(`[DocuVault] Successfully seeded ${seedResult.count} sample documents.`);
+        }
+      } catch (err) {
+        console.warn("[DocuVault] Seeding failed:", err);
+      }
+    }
+
+    // 3. Setup UI & Event Listeners
     wireEvents();
     initSplitDrag();
     registerServiceWorker();
+    
+    // 4. Render App State
     await loadSidebar();
     showWorkspace(false);
 
-    // Support the manifest "New Document" shortcut (right-click app icon -> New Document),
-    // which launches with /index.html?action=new
+    // 5. Support the manifest "New Document" shortcut
     const params = new URLSearchParams(window.location.search);
     if (params.get("action") === "new") {
       await newBlankDocument();
@@ -914,5 +929,7 @@ Brief description of the process and what this HMI controls.
     }
   }
 
+  // Bind the single initialization logic
   document.addEventListener("DOMContentLoaded", init);
+
 })();
