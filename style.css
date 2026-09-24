@@ -227,7 +227,7 @@ button, input, select, textarea { font-family: inherit; font-size: inherit; }
 }
 .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.6; }
 .empty-state h2 { color: var(--text-secondary); font-size: 16px; margin: 0 0 6px; }
-.empty-state p { font-size: 13px; max-width: 320px; }
+.empty-state p { color: var(--text-secondary); font-size: 13px; max-width: 320px; }
 
 #doc-workspace {
   display: flex;
