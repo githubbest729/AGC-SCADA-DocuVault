@@ -8,9 +8,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>AGC SCADA DocuVault</title>
 <meta name="description" content="Offline-first SCADA documentation manager for Al Gurg Automation & Controls — network architecture, PLC configs, HMI specs, and site notes.">
-<meta name="author" content="Christian Tosita Espinosa, SCADA Engineer — Al Gurg Automation & Controls">
+<meta name="author" content=" SCADA Engineer — Al Gurg Automation & Controls">
 
-     <!-- ============================================================
+<!-- ============================================================
      OPEN GRAPH (Facebook, LinkedIn, Slack, WhatsApp, Messenger)
      ============================================================ -->
 <meta property="og:type" content="website">
@@ -30,6 +30,8 @@
 <meta name="twitter:title" content="AGC SCADA DocuVault">
 <meta name="twitter:description" content="Offline-first SCADA documentation manager for Al Gurg Automation & Controls.">
 <meta name="twitter:image" content="https://githubbest729.github.io/AGC-SCADA-DocuVault/assets/twitter-card.png">
+<meta name="twitter:image:alt" content="AGC SCADA DocuVault preview">
+
 <!-- ============================================================
      PWA MANIFEST + THEME COLOR
      ============================================================ -->
@@ -67,16 +69,6 @@
 <meta name="msapplication-TileColor" content="#0f172a">
 <meta name="msapplication-TileImage" content="icons/icon-192.png">
 <meta name="msapplication-tap-highlight" content="no">
-
-<!-- ============================================================
-     OPEN GRAPH & TWITTER
-     ============================================================ -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="AGC SCADA DocuVault">
-<meta property="og:title" content="AGC SCADA DocuVault">
-<meta property="og:description" content="Offline-first SCADA documentation manager for Al Gurg Automation & Controls.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AGC SCADA DocuVault">
 
 <!-- ============================================================
      STYLESHEET
@@ -195,7 +187,6 @@
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // FIXED: Notice the dot before the slash
       navigator.serviceWorker.register('./service-worker.js').catch(err => {
         console.warn('Service Worker registration failed:', err);
       });
