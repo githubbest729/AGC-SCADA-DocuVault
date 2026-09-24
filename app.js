@@ -643,11 +643,12 @@ Brief description of the process and what this HMI controls.
   }
 
   /* ---------------------------------------------------------------------
-     PDF export — branded letterhead wrap
+     PDF export — String Injection Method (Bypasses CSS Conflicts completely)
      --------------------------------------------------------------------- */
 
   function buildLetterheadHtml(doc) {
-    const renderedBody = window.marked ? marked.parse(doc.content || "") : "";
+    // We already parsed the Markdown safely before calling this function
+    const renderedBody = doc.content || "";
     const today = new Date().toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "short",
@@ -655,111 +656,29 @@ Brief description of the process and what this HMI controls.
     });
 
     return `
-      <div class="pdf-doc">
+      <div class="pdf-doc" style="box-sizing: border-box; font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: #1e293b; background: #ffffff; padding: 30px;">
         <style>
-          .pdf-doc {
-            box-sizing: border-box; /* Ensures padding doesn't break width */
-            width: 800px;           /* Strict width for the canvas engine */
-            font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-            color: #1e293b;
-            background: #ffffff;
-            padding: 30px;          /* Safe breathing room */
-            margin: 0;
-          }
-          .pdf-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 3px solid #0f172a;
-            padding-bottom: 14px;
-            margin-bottom: 22px;
-          }
-          .pdf-header .company {
-            font-size: 18px;
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: 0.3px;
-          }
+          .pdf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0f172a; padding-bottom: 14px; margin-bottom: 22px; }
+          .pdf-header .company { font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: 0.3px; }
           .pdf-header .company .accent { color: #0ea5e9; }
-          .pdf-header .company-sub {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 2px;
-          }
-          .pdf-header .doc-meta {
-            text-align: right;
-            font-size: 11px;
-            color: #475569;
-            line-height: 1.5;
-          }
+          .pdf-header .company-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+          .pdf-header .doc-meta { text-align: right; font-size: 11px; color: #475569; line-height: 1.5; }
           .pdf-title-block { margin-bottom: 20px; }
-          .pdf-title-block h1 {
-            font-size: 20px;
-            margin: 0 0 4px;
-            color: #0f172a;
-          }
-          .pdf-title-block .category-tag {
-            display: inline-block;
-            background: #e0f2fe;
-            color: #0369a1;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 3px 9px;
-            border-radius: 10px;
-          }
+          .pdf-title-block h1 { font-size: 20px; margin: 0 0 4px; color: #0f172a; }
+          .pdf-title-block .category-tag { display: inline-block; background: #e0f2fe; color: #0369a1; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 9px; border-radius: 10px; }
           .pdf-body { font-size: 12.5px; line-height: 1.6; }
-          .pdf-body h1, .pdf-body h2, .pdf-body h3 {
-            color: #0f172a;
-            border-bottom: 1px solid #cbd5e1;
-            padding-bottom: 4px;
-            margin-top: 18px;
-          }
+          .pdf-body h1, .pdf-body h2, .pdf-body h3 { color: #0f172a; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-top: 18px; }
           .pdf-body h3 { border-bottom: none; color: #0369a1; }
-          .pdf-body code {
-            background: #f1f5f9;
-            color: #b45309;
-            padding: 1px 4px;
-            border-radius: 3px;
-            font-family: "SFMono-Regular", Consolas, monospace;
-            font-size: 0.9em;
-          }
-          .pdf-body pre {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            padding: 10px;
-            overflow-x: auto;
-          }
+          .pdf-body code { background: #f1f5f9; color: #b45309; padding: 1px 4px; border-radius: 3px; font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.9em; }
+          .pdf-body pre { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; overflow-x: auto; }
           .pdf-body pre code { background: none; color: #1e293b; }
-          .pdf-body blockquote {
-            border-left: 3px solid #0ea5e9;
-            margin: 0.8em 0;
-            padding: 3px 12px;
-            color: #475569;
-            background: #f8fafc;
-          }
+          .pdf-body blockquote { border-left: 3px solid #0ea5e9; margin: 0.8em 0; padding: 3px 12px; color: #475569; background: #f8fafc; }
           .pdf-body img { max-width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; }
           .pdf-body table { border-collapse: collapse; width: 100%; margin: 0.8em 0; font-size: 11.5px; }
-          .pdf-body th {
-            background: #0f172a;
-            color: #ffffff;
-            text-align: left;
-            padding: 6px 9px;
-            border: 1px solid #0f172a;
-          }
+          .pdf-body th { background: #0f172a; color: #ffffff; text-align: left; padding: 6px 9px; border: 1px solid #0f172a; }
           .pdf-body td { padding: 6px 9px; border: 1px solid #cbd5e1; }
           .pdf-body tr:nth-child(even) td { background: #f1f5f9; }
-          .pdf-footer {
-            margin-top: 26px;
-            padding-top: 10px;
-            border-top: 1px solid #cbd5e1;
-            display: flex;
-            justify-content: space-between;
-            font-size: 9.5px;
-            color: #94a3b8;
-          }
+          .pdf-footer { margin-top: 26px; padding-top: 10px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; font-size: 9.5px; color: #94a3b8; }
         </style>
 
         <div class="pdf-header">
@@ -789,7 +708,7 @@ Brief description of the process and what this HMI controls.
     `;
   }
 
- async function exportCurrentDocToPdf() {
+  async function exportCurrentDocToPdf() {
     if (!currentDoc) return;
     await persistCurrentDoc();
 
@@ -800,39 +719,23 @@ Brief description of the process and what this HMI controls.
 
     toast("Generating PDF… Please wait.");
 
-    // Create the container
-    const container = document.createElement("div");
-    container.innerHTML = buildLetterheadHtml(currentDoc);
-    const elementToPrint = container.firstElementChild;
+    // 1. Render Markdown to HTML *first*
+    let renderedBody = window.marked ? marked.parse(currentDoc.content || "") : "";
 
-    // 1. AUTO-FIX: Physically delete the broken placeholder image from the DOM
-    const images = elementToPrint.querySelectorAll("img");
-    images.forEach(img => {
-      if (img.src.includes("PLACEHOLDER") || !img.src) {
-        img.remove();
-      }
-    });
+    // 2. SCRUB THE BROKEN IMAGE: 
+    // This deletes the actual <img src="PLACEHOLDER..."> tag from the parsed HTML,
+    // guaranteeing html2canvas will never crash from ERR_INVALID_URL.
+    renderedBody = renderedBody.replace(/<img[^>]*PLACEHOLDER_PASTE_YOUR_DIAGRAM_HERE[^>]*>/gi, "");
+
+    // Pass the safe, rendered HTML to the builder
+    const safeDoc = { ...currentDoc, content: renderedBody };
+    const fullHtmlString = buildLetterheadHtml(safeDoc);
+
+    const safeName = (safeDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
     
-    // Mount it strictly to the top-left of the window
-    elementToPrint.style.position = "absolute";
-    elementToPrint.style.top = "0";
-    elementToPrint.style.left = "0";
-    elementToPrint.style.width = "800px";
-    elementToPrint.style.zIndex = "-9999";
-    elementToPrint.style.backgroundColor = "#ffffff";
-    document.body.appendChild(elementToPrint);
-
-    // 2. CRITICAL FIX: Pause for 150ms so the browser calculates the height!
-    // Without this, the height registers as 0, resulting in a blank white page.
-    await new Promise(resolve => setTimeout(resolve, 150));
-
-    // Disable overflow temporarily to stop left-side clipping
-    const originalBodyOverflow = document.body.style.overflow;
-    const originalHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "visible";
-    document.documentElement.style.overflow = "visible";
-
-    const safeName = (currentDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
+    // 3. PASS THE RAW HTML STRING TO html2pdf()
+    // By passing a string instead of a DOM element, html2pdf creates its own isolated iframe.
+    // This completely ignores your app's "overflow: hidden" CSS and stops the 719x0 zero-height bug!
     const opt = {
       margin: [10, 10, 15, 10], // top, left, bottom, right (mm)
       filename: `AGC_${safeName}.pdf`,
@@ -840,29 +743,17 @@ Brief description of the process and what this HMI controls.
       html2canvas: { 
         scale: 2, 
         useCORS: true, 
-        backgroundColor: "#ffffff",
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 800
+        letterRendering: true
       },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      pagebreak: { mode: ["css", "legacy"] },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     };
 
     try {
-      await html2pdf().set(opt).from(elementToPrint).save();
+      await html2pdf().set(opt).from(fullHtmlString).save();
       toast("PDF exported successfully.");
     } catch (err) {
       console.error(err);
       toast("PDF export failed: " + err.message, true);
-    } finally {
-      // Clean up the DOM and restore original overflow
-      document.body.style.overflow = originalBodyOverflow;
-      document.documentElement.style.overflow = originalHtmlOverflow;
-      
-      if (document.body.contains(elementToPrint)) {
-        document.body.removeChild(elementToPrint);
-      }
     }
   }
 
