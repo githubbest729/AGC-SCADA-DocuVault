@@ -801,16 +801,20 @@ Brief description of the process and what this HMI controls.
     const container = document.createElement("div");
     container.innerHTML = buildLetterheadHtml(currentDoc);
     
-    // 2. Force explicit physical dimensions so html2canvas can capture it
-    container.style.position = "absolute";
-    container.style.left = "-9999px";
-    container.style.top = "-9999px";
+    // 2. Force explicit physical dimensions and DO NOT use display:none or left:-9999px
+    container.style.position = "fixed";
+    container.style.top = "0";
+    container.style.left = "0";
     container.style.width = "800px"; // Crucial: Forces A4 standard width scaling
     container.style.background = "#ffffff";
     container.style.color = "#000000";
+    container.style.zIndex = "-9999"; 
+    container.style.opacity = "0.01"; // Ensures browser paints the DOM without user seeing it
     
-    // Append to body so the browser actually renders the fonts and layout
     document.body.appendChild(container);
+
+    // 3. Add a tiny delay to ensure images/fonts are painted by the browser before capturing
+    await new Promise(resolve => setTimeout(resolve, 300));
 
     const safeName = (currentDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
     const opt = {
@@ -821,7 +825,7 @@ Brief description of the process and what this HMI controls.
         scale: 2, 
         useCORS: true, 
         backgroundColor: "#ffffff",
-        windowWidth: 800 // Explicitly tell the canvas how wide to look
+        windowWidth: 800 
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       pagebreak: { mode: ["css", "legacy"] },
@@ -834,7 +838,7 @@ Brief description of the process and what this HMI controls.
       console.error(err);
       toast("PDF export failed: " + err.message, true);
     } finally {
-      // 3. Clean up the DOM to prevent memory leaks
+      // 4. Clean up the DOM
       if (document.body.contains(container)) {
         document.body.removeChild(container);
       }
@@ -899,7 +903,6 @@ function registerServiceWorker() {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          // ADD THE DOT AND SLASH HERE: ./service-worker.js
           .register("./service-worker.js") 
           .then((reg) => console.log("[DocuVault] Service worker registered:", reg.scope))
           .catch((err) => console.warn("[DocuVault] Service worker registration failed:", err));
