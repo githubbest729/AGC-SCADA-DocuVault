@@ -22,29 +22,43 @@ Pure HTML/CSS/vanilla JS — no build step, no framework.
 | `screenshots/` | Rich-install-UI screenshots — **you provide these** |
 | `assets/` | Open Graph / Twitter share images — **you provide these** |
 
-## Required image files (drop these in, exact names/paths)
+## Images — included, generated
+
+Every icon, screenshot, and social-share image listed below is **already in
+this zip** at the correct path — nothing is a placeholder or empty folder.
+They were generated programmatically to match the app's dark
+slate/electric-blue industrial theme:
 
 ```
-/favicon.ico
-/icons/icon-192.png
+/favicon.ico                          (16/32/48 multi-res)
+/icons/icon-192.png                   "AGC" wordmark, rounded-square, any-purpose
 /icons/icon-512.png
-/icons/icon-maskable-192.png
-/icons/icon-maskable-512.png
-/icons/icon-152.png
+/icons/icon-152.png                   legacy iOS home-screen size
 /icons/icon-180.png
-/icons/apple-touch-icon.png      (180x180)
-/icons/favicon-16x16.png
+/icons/apple-touch-icon.png           (180x180, square — iOS applies its own rounding)
+/icons/icon-maskable-192.png          full-bleed background, logo inside safe zone
+/icons/icon-maskable-512.png
+/icons/favicon-16x16.png              single bold "A" glyph — full wordmark isn't legible this small
 /icons/favicon-32x32.png
 /icons/favicon-48x48.png
-/screenshots/screenshot-wide.png     (1280x800, desktop install UI)
-/screenshots/screenshot-narrow.png   (750x1334, mobile install UI)
-/assets/og-image.png             (1200x630, Facebook/LinkedIn/Slack preview)
-/assets/twitter-card.png         (1200x630, X/Twitter preview)
+/screenshots/screenshot-wide.png      (1280x800) desktop install-UI mockup
+/screenshots/screenshot-narrow.png    (750x1334) mobile install-UI mockup
+/assets/og-image.png                  (1200x630) Open Graph share banner
+/assets/twitter-card.png              (1200x630) Twitter/X card banner
 ```
 
-`icons/`, `screenshots/`, and `assets/` each ship with an empty `.gitkeep`
-placeholder so the folder structure survives git/zip — delete those once you
-add real images.
+**One honest caveat:** the two `screenshots/` files are *stylized mockups* of
+the real layout (built to the exact pixel dimensions and matching every UI
+detail — sidebar, toolbar, editor, live preview, table rendering), not
+literal screen captures, since I can't run your browser to take one. They'll
+work correctly in the install prompt today. Whenever it's convenient, replace
+them with a real capture (open the installed app, take an OS screenshot,
+overwrite the same filename) for a fully authentic install preview — nothing
+else needs to change.
+
+Everything else (the app icons, maskable icons, favicons, OG/Twitter banners)
+is finished, real artwork — not mockups — and doesn't need replacing unless
+you want different branding.
 
 ## Before you deploy
 
