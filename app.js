@@ -797,26 +797,21 @@ Brief description of the process and what this HMI controls.
 
     toast("Generating PDF… Please wait.");
 
-    // 1. Create a temporary off-screen container
+    // 1. AUTO-FIX: Strip the fake placeholder image so it never crashes html2canvas
+    let safeContent = currentDoc.content || "";
+    safeContent = safeContent.replace(/data:image\/png;base64,PLACEHOLDER_PASTE_YOUR_DIAGRAM_HERE/g, "");
+
+    // Create a temporary document object with the cleaned content
+    const safeDoc = { ...currentDoc, content: safeContent };
+
+    // 2. Create the container (Do NOT append it to the body with CSS hacks)
     const container = document.createElement("div");
-    container.innerHTML = buildLetterheadHtml(currentDoc);
+    container.innerHTML = buildLetterheadHtml(safeDoc);
     
-    // 2. Force explicit physical dimensions and DO NOT use display:none or left:-9999px
-    container.style.position = "fixed";
-    container.style.top = "0";
-    container.style.left = "0";
-    container.style.width = "800px"; // Crucial: Forces A4 standard width scaling
-    container.style.background = "#ffffff";
-    container.style.color = "#000000";
-    container.style.zIndex = "-9999"; 
-    container.style.opacity = "0.01"; // Ensures browser paints the DOM without user seeing it
-    
-    document.body.appendChild(container);
+    // Grab the actual wrapper element inside the container
+    const elementToPrint = container.firstElementChild;
 
-    // 3. Add a tiny delay to ensure images/fonts are painted by the browser before capturing
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    const safeName = (currentDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
+    const safeName = (safeDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
     const opt = {
       margin: [12, 12, 16, 12], // top, left, bottom, right (mm)
       filename: `AGC_${safeName}.pdf`,
@@ -825,23 +820,19 @@ Brief description of the process and what this HMI controls.
         scale: 2, 
         useCORS: true, 
         backgroundColor: "#ffffff",
-        windowWidth: 800 
+        windowWidth: 800 // Forces standard A4 width calculation
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       pagebreak: { mode: ["css", "legacy"] },
     };
 
     try {
-      await html2pdf().set(opt).from(container).save();
+      // Pass the element directly to html2pdf, it handles the rest natively
+      await html2pdf().set(opt).from(elementToPrint).save();
       toast("PDF exported successfully.");
     } catch (err) {
       console.error(err);
       toast("PDF export failed: " + err.message, true);
-    } finally {
-      // 4. Clean up the DOM
-      if (document.body.contains(container)) {
-        document.body.removeChild(container);
-      }
     }
   }
 
