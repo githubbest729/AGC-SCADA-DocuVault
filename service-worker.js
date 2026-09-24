@@ -5,38 +5,38 @@
    with zero network connection.
    ========================================================================== */
 
-const CACHE_VERSION = "agc-docuvault-v1";
+const CACHE_VERSION = "agc-docuvault-v2"; // Bumped version to force cache refresh
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
 // Local files that make up the installable app shell.
-// Update CACHE_VERSION whenever any of these change so old caches are purged.
+// FIXED: Using relative paths ("./") so GitHub pages routing doesn't break.
 const APP_SHELL_FILES = [
-  "/",
-  "/index.html",
-  "/style.css",
-  "/app.js",
-  "/database.js",
-  "/manifest.json",
-  "/browserconfig.xml",
-  "/offline.html",
-  "/favicon.ico",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png",
-  "/icons/icon-maskable-192.png",
-  "/icons/icon-maskable-512.png",
-  "/icons/icon-152.png",
-  "/icons/icon-180.png",
-  "/icons/apple-touch-icon.png",
-  "/icons/favicon-16x16.png",
-  "/icons/favicon-32x32.png",
-  "/icons/favicon-48x48.png",
+  "./",
+  "./index.html",
+  "./style.css",
+  "./app.js",
+  "./database.js",
+  "./seed-data.js", // ADDED: Seed data script
+  "./manifest.json",
+  "./favicon.ico",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/icon-maskable-192.png",
+  "./icons/icon-maskable-512.png",
+  "./icons/icon-152.png",
+  "./icons/icon-180.png",
+  "./icons/apple-touch-icon.png",
+  "./icons/favicon-16x16.png",
+  "./icons/favicon-32x32.png",
+  "./icons/favicon-48x48.png"
 ];
 
 // Third-party CDN assets — cached at runtime (stale-while-revalidate) so the
 // editor and PDF export still work offline after the first successful load.
 const RUNTIME_ORIGINS = [
-  "https://cdnjs.cloudflare.com",
+  "https://cdnjs.cloudflare.com", // For html2pdf
+  "https://cdn.jsdelivr.net"      // ADDED: For marked.js
 ];
 
 self.addEventListener("install", (event) => {
@@ -74,17 +74,17 @@ self.addEventListener("fetch", (event) => {
 
   const url = req.url;
 
-  // Navigation requests: try network first, fall back to cached shell, then offline page.
+  // Navigation requests: try network first, fall back to cached shell.
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
         .then((res) => {
           const copy = res.clone();
-          caches.open(APP_SHELL_CACHE).then((cache) => cache.put("/index.html", copy));
+          caches.open(APP_SHELL_CACHE).then((cache) => cache.put("./index.html", copy));
           return res;
         })
         .catch(() =>
-          caches.match("/index.html").then((cached) => cached || caches.match("/offline.html"))
+          caches.match("./index.html")
         )
     );
     return;
