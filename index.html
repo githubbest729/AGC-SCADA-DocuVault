@@ -9,7 +9,6 @@
 <title>AGC SCADA DocuVault</title>
 <meta name="description" content="Offline-first SCADA documentation manager for Al Gurg Automation & Controls — network architecture, PLC configs, HMI specs, and site notes.">
 <meta name="author" content="Christian Tosita Espinosa, SCADA Engineer — Al Gurg Automation & Controls">
-<link rel="canonical" href="https://YOUR-DEPLOY-DOMAIN/index.html">
 
 <!-- ============================================================
      PWA MANIFEST + THEME COLOR
@@ -19,21 +18,21 @@
 <meta name="color-scheme" content="dark">
 
 <!-- ============================================================
-     STANDARD FAVICONS
+     STANDARD FAVICONS (Relative Paths)
      ============================================================ -->
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48x48.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48x48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
 
 <!-- ============================================================
      iOS / SAFARI (Apple touch icons + web-app meta tags)
      ============================================================ -->
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="DocuVault">
@@ -44,33 +43,20 @@
 <!-- ============================================================
      MICROSOFT / WINDOWS TILES
      ============================================================ -->
-<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-config" content="browserconfig.xml">
 <meta name="msapplication-TileColor" content="#0f172a">
-<meta name="msapplication-TileImage" content="/icons/icon-192.png">
+<meta name="msapplication-TileImage" content="icons/icon-192.png">
 <meta name="msapplication-tap-highlight" content="no">
 
 <!-- ============================================================
-     OPEN GRAPH (Facebook, LinkedIn, Slack, WhatsApp previews)
+     OPEN GRAPH & TWITTER
      ============================================================ -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AGC SCADA DocuVault">
 <meta property="og:title" content="AGC SCADA DocuVault">
-<meta property="og:description" content="Offline-first SCADA documentation manager for Al Gurg Automation & Controls — network architecture, PLC configs, HMI specs, and site notes.">
-<meta property="og:url" content="https://YOUR-DEPLOY-DOMAIN/index.html">
-<meta property="og:image" content="https://YOUR-DEPLOY-DOMAIN/assets/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="AGC SCADA DocuVault — offline SCADA documentation manager">
-<meta property="og:locale" content="en_US">
-
-<!-- ============================================================
-     TWITTER / X CARD
-     ============================================================ -->
+<meta property="og:description" content="Offline-first SCADA documentation manager for Al Gurg Automation & Controls.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AGC SCADA DocuVault">
-<meta name="twitter:description" content="Offline-first SCADA documentation manager for Al Gurg Automation & Controls.">
-<meta name="twitter:image" content="https://YOUR-DEPLOY-DOMAIN/assets/twitter-card.png">
-<meta name="twitter:image:alt" content="AGC SCADA DocuVault — offline SCADA documentation manager">
 
 <!-- ============================================================
      STYLESHEET
@@ -182,14 +168,15 @@
 
 <!-- 2. Core Logic -->
 <script src="database.js"></script>
-<script src="seed-data.js"></script> <!-- Must load after DB, before App -->
+<script src="seed-data.js"></script>
 <script src="app.js"></script>
 
 <!-- 3. PWA Service Worker Registration -->
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js').catch(err => {
+      // FIXED: Notice the dot before the slash
+      navigator.serviceWorker.register('./service-worker.js').catch(err => {
         console.warn('Service Worker registration failed:', err);
       });
     });
