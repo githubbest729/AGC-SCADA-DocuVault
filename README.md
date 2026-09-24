@@ -121,9 +121,3 @@ npm start       # same, without auto-opening the browser
 
 ---
 
-### GitHub Markdown Enhancements Applied:
-
-* **GitHub Alerts (`> [!IMPORTANT]`, `> [!CAUTION]`, etc.):** Replaced standard bold text with native, color-coded alert blocks that render with built-in icons on GitHub.
-* **Mermaid.js Diagram (````mermaid`):** Converted the textual explanation of your data model into a native, rendered flowchart directly inside the README.
-* **Collapsible Details (`<details>`):** Wrapped the long list of image assets in a dropdown summary block to keep the main document clean and scannable.
-* **Shields.io Badges:** Added standard repository technology badges to the header for a professional, open-source aesthetic.
