@@ -789,7 +789,7 @@ Brief description of the process and what this HMI controls.
     `;
   }
 
-  async function exportCurrentDocToPdf() {
+ async function exportCurrentDocToPdf() {
     if (!currentDoc) return;
     await persistCurrentDoc();
 
@@ -800,15 +800,18 @@ Brief description of the process and what this HMI controls.
 
     toast("Generating PDF… Please wait.");
 
-    // 1. AUTO-FIX: Completely remove the Markdown image tag containing the broken placeholder
-    let safeContent = currentDoc.content || "";
-    safeContent = safeContent.replace(/!\[.*?\]\(data:image\/png;base64,PLACEHOLDER_PASTE_YOUR_DIAGRAM_HERE\)/g, "");
-    const safeDoc = { ...currentDoc, content: safeContent };
-
-    // 2. Create the container
+    // Create the container
     const container = document.createElement("div");
-    container.innerHTML = buildLetterheadHtml(safeDoc);
+    container.innerHTML = buildLetterheadHtml(currentDoc);
     const elementToPrint = container.firstElementChild;
+
+    // 1. AUTO-FIX: Physically delete the broken placeholder image from the DOM
+    const images = elementToPrint.querySelectorAll("img");
+    images.forEach(img => {
+      if (img.src.includes("PLACEHOLDER") || !img.src) {
+        img.remove();
+      }
+    });
     
     // Mount it strictly to the top-left of the window
     elementToPrint.style.position = "absolute";
@@ -819,15 +822,17 @@ Brief description of the process and what this HMI controls.
     elementToPrint.style.backgroundColor = "#ffffff";
     document.body.appendChild(elementToPrint);
 
-    // 3. CRITICAL BUG FIX for html2canvas clipping/blank pages:
-    // The CSS property `overflow: hidden` on html/body causes html2canvas to clip 
-    // the screenshot or render white pages. We MUST set it to visible temporarily.
+    // 2. CRITICAL FIX: Pause for 150ms so the browser calculates the height!
+    // Without this, the height registers as 0, resulting in a blank white page.
+    await new Promise(resolve => setTimeout(resolve, 150));
+
+    // Disable overflow temporarily to stop left-side clipping
     const originalBodyOverflow = document.body.style.overflow;
     const originalHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = "visible";
     document.documentElement.style.overflow = "visible";
 
-    const safeName = (safeDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
+    const safeName = (currentDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
     const opt = {
       margin: [10, 10, 15, 10], // top, left, bottom, right (mm)
       filename: `AGC_${safeName}.pdf`,
@@ -851,7 +856,7 @@ Brief description of the process and what this HMI controls.
       console.error(err);
       toast("PDF export failed: " + err.message, true);
     } finally {
-      // 4. Clean up the DOM and restore original overflow
+      // Clean up the DOM and restore original overflow
       document.body.style.overflow = originalBodyOverflow;
       document.documentElement.style.overflow = originalHtmlOverflow;
       
