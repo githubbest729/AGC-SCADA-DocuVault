@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy | AGC SCADA DocuVault</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .legal-wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px; height: 100vh; overflow-y: auto; }
+  .legal-wrap h1 { color: var(--accent); font-size: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+  .legal-wrap h2 { color: var(--text-primary); font-size: 16px; margin-top: 24px; }
+  .legal-wrap p, .legal-wrap li { color: var(--text-secondary); line-height: 1.6; font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div class="legal-wrap markdown-body">
+  <h1>Privacy Policy</h1>
+  <p><strong>Effective Date:</strong> September 2026</p>
+  <p><strong>AGC SCADA DocuVault</strong> is an offline-first Progressive Web Application (PWA) developed for industrial automation documentation.</p>
+  
+  <h2>1. Local Data Storage</h2>
+  <p>DocuVault operates entirely client-side. All documents, configurations, site notes, and embedded clipboard images are saved locally on your device via browser-based <strong>IndexedDB</strong> storage. No database records are ever uploaded to an external server.</p>
+  
+  <h2>2. External Network Requests</h2>
+  <p>The application is designed to function with zero internet connectivity after its initial load. Required runtime dependencies (such as <code>marked.js</code> and <code>html2pdf.js</code>) are loaded via public CDNs (jsDelivr and Cloudflare) and safely handled offline through your browser's Service Worker cache.</p>
+  
+  <h2>3. Contact</h2>
+  <p>For questions regarding this tool, contact Christian Tosita Espinosa at Al Gurg Automation & Controls.</p>
+  
+  <p style="margin-top: 30px;"><a href="./index.html" style="color: var(--accent); text-decoration: none;">← Back to DocuVault Workspace</a></p>
+</div>
+</body>
+</html>
