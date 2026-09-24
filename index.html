@@ -73,11 +73,8 @@
 <meta name="twitter:image:alt" content="AGC SCADA DocuVault — offline SCADA documentation manager">
 
 <!-- ============================================================
-     EXTERNAL LIBS (CDN)
+     STYLESHEET
      ============================================================ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -176,7 +173,28 @@
 <!-- ============ HIDDEN PDF EXPORT ROOT ============ -->
 <div id="pdf-export-root" class="pdf-export-root"></div>
 
+<!-- ============================================================
+     SCRIPTS (Loaded exactly once at the end of the body)
+     ============================================================ -->
+<!-- 1. External Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!-- 2. Core Logic -->
 <script src="database.js"></script>
+<script src="seed-data.js"></script> <!-- Must load after DB, before App -->
 <script src="app.js"></script>
+
+<!-- 3. PWA Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').catch(err => {
+        console.warn('Service Worker registration failed:', err);
+      });
+    });
+  }
+</script>
+
 </body>
 </html>
