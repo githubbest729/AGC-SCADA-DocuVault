@@ -895,11 +895,12 @@ Brief description of the process and what this HMI controls.
      Service worker registration
      --------------------------------------------------------------------- */
 
-  function registerServiceWorker() {
+function registerServiceWorker() {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("service-worker.js")
+          // ADD THE DOT AND SLASH HERE: ./service-worker.js
+          .register("./service-worker.js") 
           .then((reg) => console.log("[DocuVault] Service worker registered:", reg.scope))
           .catch((err) => console.warn("[DocuVault] Service worker registration failed:", err));
       });
