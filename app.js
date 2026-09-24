@@ -658,10 +658,13 @@ Brief description of the process and what this HMI controls.
       <div class="pdf-doc">
         <style>
           .pdf-doc {
+            box-sizing: border-box; /* Ensures padding doesn't break width */
+            width: 800px;           /* Strict width for the canvas engine */
             font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
             color: #1e293b;
             background: #ffffff;
-            padding: 0;
+            padding: 30px;          /* Safe breathing room */
+            margin: 0;
           }
           .pdf-header {
             display: flex;
@@ -797,42 +800,51 @@ Brief description of the process and what this HMI controls.
 
     toast("Generating PDF… Please wait.");
 
-    // 1. AUTO-FIX: Strip the fake placeholder image so it never crashes html2canvas
+    // Strip the fake placeholder image so it never crashes html2canvas
     let safeContent = currentDoc.content || "";
     safeContent = safeContent.replace(/data:image\/png;base64,PLACEHOLDER_PASTE_YOUR_DIAGRAM_HERE/g, "");
-
-    // Create a temporary document object with the cleaned content
     const safeDoc = { ...currentDoc, content: safeContent };
 
-    // 2. Create the container (Do NOT append it to the body with CSS hacks)
+    // Create the container
     const container = document.createElement("div");
     container.innerHTML = buildLetterheadHtml(safeDoc);
-    
-    // Grab the actual wrapper element inside the container
     const elementToPrint = container.firstElementChild;
+    
+    // Mount it strictly to the top-left of the window so no CSS offsets break the screenshot
+    elementToPrint.style.position = "absolute";
+    elementToPrint.style.top = "0";
+    elementToPrint.style.left = "0";
+    elementToPrint.style.zIndex = "-9999";
+    document.body.appendChild(elementToPrint);
 
     const safeName = (safeDoc.title || "document").replace(/[^a-z0-9\-_]+/gi, "_");
     const opt = {
-      margin: [12, 12, 16, 12], // top, left, bottom, right (mm)
+      margin: [10, 10, 15, 10], // top, left, bottom, right (mm)
       filename: `AGC_${safeName}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { 
         scale: 2, 
         useCORS: true, 
         backgroundColor: "#ffffff",
-        windowWidth: 800 // Forces standard A4 width calculation
+        scrollX: 0, // CRITICAL: This explicitly forces the screenshot to not cut off the left edge
+        scrollY: 0, // CRITICAL: This explicitly forces the screenshot to not cut off the top edge
+        windowWidth: 800
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       pagebreak: { mode: ["css", "legacy"] },
     };
 
     try {
-      // Pass the element directly to html2pdf, it handles the rest natively
       await html2pdf().set(opt).from(elementToPrint).save();
       toast("PDF exported successfully.");
     } catch (err) {
       console.error(err);
       toast("PDF export failed: " + err.message, true);
+    } finally {
+      // Clean up the DOM immediately so it doesn't leave ghost elements
+      if (document.body.contains(elementToPrint)) {
+        document.body.removeChild(elementToPrint);
+      }
     }
   }
 
@@ -890,7 +902,7 @@ Brief description of the process and what this HMI controls.
      Service worker registration
      --------------------------------------------------------------------- */
 
-function registerServiceWorker() {
+  function registerServiceWorker() {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
